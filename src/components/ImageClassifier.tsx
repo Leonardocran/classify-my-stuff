@@ -26,10 +26,10 @@ const ImageClassifier = () => {
       setIsLoading(true);
       setLoadingProgress(0);
       
-      // Initialize the classifier if not already loaded
+      // Initialize the classifier with a browser-compatible model
       const classifier = await pipeline(
         'image-classification',
-        'microsoft/resnet-50',
+        'onnx-community/mobilenetv4_conv_small.e2400_r224_in1k',
         {
           progress_callback: (progress: any) => {
             if (progress.status === 'progress') {
