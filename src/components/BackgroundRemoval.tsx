@@ -4,6 +4,7 @@ import { Progress } from '@/components/ui/progress';
 import { Scissors, Download, Loader2 } from 'lucide-react';
 import { pipeline, env } from '@huggingface/transformers';
 import { toast } from 'sonner';
+// import {signUp} from "../../backend/supabase.js"
 
 // Configure transformers.js
 env.allowLocalModels = false;
