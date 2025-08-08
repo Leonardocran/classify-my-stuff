@@ -66,11 +66,15 @@ export default {
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',
 				'gradient-secondary': 'var(--gradient-secondary)',
+				'gradient-colorful': 'var(--gradient-colorful)',
+				'gradient-rainbow': 'var(--gradient-rainbow)',
 				'gradient-accent': 'var(--gradient-accent)',
 			},
 			boxShadow: {
 				'glow-primary': 'var(--glow-primary)',
 				'glow-secondary': 'var(--glow-secondary)',
+				'glow-colorful': 'var(--glow-colorful)',
+				'glow-rainbow': 'var(--glow-rainbow)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

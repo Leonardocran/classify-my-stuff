@@ -50,27 +50,29 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-colorful flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/3 right-1/3 w-60 h-60 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-500"></div>
+        <div className="absolute bottom-1/3 left-1/3 w-60 h-60 bg-green-500/20 rounded-full blur-3xl animate-pulse delay-700"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/15 rounded-full blur-3xl animate-pulse delay-300"></div>
       </div>
 
-      <Card className="w-full max-w-md relative z-10 backdrop-blur-sm bg-card/95 border-border/50 shadow-2xl shadow-primary/10">
+      <Card className="w-full max-w-md relative z-10 backdrop-blur-sm bg-card/95 border-border/50 shadow-2xl shadow-glow-colorful">
         <CardHeader className="space-y-4 text-center">
           <div className="flex justify-center">
-            <div className="p-3 rounded-full bg-gradient-primary shadow-glow-primary">
+            <div className="p-3 rounded-full bg-gradient-rainbow shadow-glow-rainbow">
               <Sparkles className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
           <div>
-            <CardTitle className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Welcome Back
+            <CardTitle className="text-3xl font-bold bg-gradient-rainbow bg-clip-text text-transparent">
+              Classify-my-Stuff
             </CardTitle>
             <CardDescription className="text-muted-foreground mt-2 text-lg">
-              Sign in to continue your AI journey
+              Sign in to continue organizing with AI
             </CardDescription>
           </div>
         </CardHeader>
@@ -124,7 +126,7 @@ export default function Login() {
           <CardFooter className="flex flex-col space-y-4 pb-8">
             <Button 
               type="submit" 
-              className="w-full h-12 bg-gradient-primary hover:shadow-glow-primary transition-all duration-300 text-primary-foreground font-semibold" 
+              className="w-full h-12 bg-gradient-rainbow hover:shadow-glow-rainbow transition-all duration-300 text-primary-foreground font-semibold" 
               disabled={isLoading}
             >
               {isLoading ? (
