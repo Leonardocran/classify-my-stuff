@@ -36,14 +36,26 @@ All colors MUST be HSL.
     --input: 215 27% 17%;
     --ring: 262 83% 58%;
 
-    /* AI-themed gradients */
+    /* Colorful theme colors */
+    --success: 142 76% 36%;
+    --success-foreground: 355 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 20 14% 4%;
+    --info: 199 89% 48%;
+    --info-foreground: 355 0% 100%;
+    
+    /* Subtle vibrant gradients */
     --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(221 83% 53%));
     --gradient-secondary: linear-gradient(135deg, hsl(221 83% 53%), hsl(262 83% 58%));
+    --gradient-colorful: linear-gradient(135deg, hsl(262 60% 45%), hsl(221 70% 50%), hsl(199 75% 55%));
+    --gradient-rainbow: linear-gradient(135deg, hsl(262 70% 50%), hsl(285 75% 55%), hsl(310 70% 60%));
     --gradient-accent: linear-gradient(180deg, hsl(220 27% 8%), hsl(215 27% 17%));
     
-    /* Glowing effects */
-    --glow-primary: 0 0 20px hsl(262 83% 58% / 0.4);
-    --glow-secondary: 0 0 30px hsl(221 83% 53% / 0.3);
+    /* Subtle glowing effects */
+    --glow-primary: 0 0 20px hsl(262 83% 58% / 0.2);
+    --glow-secondary: 0 0 30px hsl(221 83% 53% / 0.15);
+    --glow-colorful: 0 0 25px hsl(262 60% 45% / 0.2);
+    --glow-rainbow: 0 0 20px hsl(262 70% 50% / 0.15);
 
     --radius: 0.5rem;
 

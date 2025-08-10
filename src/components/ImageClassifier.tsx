@@ -126,42 +126,90 @@ const ImageClassifier = () => {
   const formatScore = (score: number) => `${(score * 100).toFixed(1)}%`;
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/30 p-6 relative overflow-hidden">
+      {/* Subtle animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/8 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/4 right-1/4 w-60 h-60 bg-primary/5 rounded-full blur-3xl animate-pulse delay-500"></div>
+      </div>
+      
+      <div className="max-w-7xl mx-auto space-y-8 relative z-10">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-primary rounded-full text-primary-foreground font-medium shadow-glow-primary">
+        <div className="text-center space-y-6 py-8">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-primary/20 backdrop-blur-sm rounded-full text-primary font-medium border border-primary/20 shadow-lg">
             <Brain className="w-5 h-5" />
             Advanced AI Vision Platform
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            AI Image Analysis Suite
+          <h1 className="text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            Classify-my-Stuff
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Professional-grade AI tools for image classification, object detection, editing, and analysis
           </p>
         </div>
 
+        {/* Feature Cards Overview */}
+        <div className="grid md:grid-cols-4 gap-6 mb-8">
+          <Card className="p-6 text-center bg-card/80 backdrop-blur-sm border border-border/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <Brain className="w-8 h-8 text-primary mx-auto mb-3" />
+            <h3 className="font-semibold mb-2">Smart Analysis</h3>
+            <p className="text-sm text-muted-foreground">AI-powered image classification</p>
+          </Card>
+          <Card className="p-6 text-center bg-card/80 backdrop-blur-sm border border-border/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <Settings className="w-8 h-8 text-primary mx-auto mb-3" />
+            <h3 className="font-semibold mb-2">AI Tools</h3>
+            <p className="text-sm text-muted-foreground">Object detection & editing</p>
+          </Card>
+          <Card className="p-6 text-center bg-card/80 backdrop-blur-sm border border-border/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <ImageIcon className="w-8 h-8 text-primary mx-auto mb-3" />
+            <h3 className="font-semibold mb-2">History</h3>
+            <p className="text-sm text-muted-foreground">Track your analysis results</p>
+          </Card>
+          <Card className="p-6 text-center bg-card/80 backdrop-blur-sm border border-border/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <Zap className="w-8 h-8 text-primary mx-auto mb-3" />
+            <h3 className="font-semibold mb-2">Analytics</h3>
+            <p className="text-sm text-muted-foreground">Performance insights</p>
+          </Card>
+        </div>
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="analyze">Analyze</TabsTrigger>
-            <TabsTrigger value="tools">AI Tools</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 bg-card/60 backdrop-blur-sm border border-border/50">
+            <TabsTrigger value="analyze" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Analyze</TabsTrigger>
+            <TabsTrigger value="tools" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">AI Tools</TabsTrigger>
+            <TabsTrigger value="history" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">History</TabsTrigger>
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Analytics</TabsTrigger>
           </TabsList>
 
           <TabsContent value="analyze" className="space-y-6">
             {/* Model Selection */}
-            <ModelSelector 
-              selectedModel={selectedModel} 
-              onModelChange={setSelectedModel} 
-            />
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <ModelSelector 
+                  selectedModel={selectedModel} 
+                  onModelChange={setSelectedModel} 
+                />
+              </div>
+              <Card className="p-6 bg-gradient-primary/5 border border-primary/20">
+                <h3 className="font-semibold mb-2 text-primary">Quick Stats</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Total Analyzed:</span>
+                    <span className="font-medium">{history.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Favorites:</span>
+                    <span className="font-medium">{history.filter(h => h.isFavorite).length}</span>
+                  </div>
+                </div>
+              </Card>
+            </div>
 
             {/* Upload Area */}
-            <Card className="p-8 border-2 border-dashed border-border hover:border-primary/50 transition-colors">
+            <Card className="p-8 border-2 border-dashed border-border/50 hover:border-primary/30 transition-colors bg-card/60 backdrop-blur-sm">
               <div className="text-center space-y-4">
-                <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center shadow-glow-primary">
-                  <Upload className="w-8 h-8 text-primary-foreground" />
+                <div className="mx-auto w-16 h-16 bg-gradient-primary/20 rounded-full flex items-center justify-center border border-primary/30">
+                  <Upload className="w-8 h-8 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Upload or Capture Image</h3>
@@ -204,7 +252,7 @@ const ImageClassifier = () => {
 
             {/* Loading Progress */}
             {isLoading && (
-              <Card className="p-6">
+              <Card className="p-6 bg-card/50 backdrop-blur-sm border border-border/30">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <Zap className="w-5 h-5 text-primary animate-pulse" />
@@ -221,7 +269,7 @@ const ImageClassifier = () => {
             {/* Results */}
             {selectedImage && (
               <div className="grid lg:grid-cols-2 gap-8">
-                <Card className="p-6">
+                <Card className="p-6 bg-card/50 backdrop-blur-sm border border-border/30">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold">Image Preview</h3>
                     <div className="flex gap-2">
@@ -242,14 +290,14 @@ const ImageClassifier = () => {
                 </Card>
 
                 {results.length > 0 && (
-                  <Card className="p-6">
+                  <Card className="p-6 bg-card/50 backdrop-blur-sm border border-border/30">
                     <h3 className="text-lg font-semibold mb-4">Classification Results</h3>
                     <div className="space-y-3">
                       {results.map((result, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-gradient-accent border">
+                        <div key={index} className="flex items-center justify-between p-4 rounded-lg bg-card/80 border border-border/50 hover:bg-card transition-colors">
                           <div className="flex-1">
-                            <p className="font-medium capitalize">{result.label.replace(/_/g, ' ')}</p>
-                            <div className="w-full bg-muted rounded-full h-2 mt-2">
+                            <p className="font-medium capitalize text-foreground">{result.label.replace(/_/g, ' ')}</p>
+                            <div className="w-full bg-muted/70 rounded-full h-2 mt-2">
                               <div
                                 className="bg-gradient-primary h-2 rounded-full transition-all duration-500"
                                 style={{ width: `${result.score * 100}%` }}
@@ -275,7 +323,7 @@ const ImageClassifier = () => {
                 <BackgroundRemoval imageUrl={selectedImage} onResult={() => {}} />
               </div>
             ) : (
-              <Card className="p-8 text-center">
+              <Card className="p-8 text-center bg-card/50 backdrop-blur-sm border border-border/30">
                 <p className="text-muted-foreground">Upload an image to access AI tools</p>
               </Card>
             )}
