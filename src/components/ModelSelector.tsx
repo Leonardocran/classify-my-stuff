@@ -14,24 +14,6 @@ export interface ModelConfig {
 
 const AVAILABLE_MODELS: ModelConfig[] = [
   {
-    id: 'mobilenet',
-    name: 'MobileNet V4',
-    description: 'General object classification',
-    modelPath: 'onnx-community/mobilenetv4_conv_small.e2400_r224_in1k',
-    task: 'image-classification',
-    icon: <Camera className="w-4 h-4" />,
-    category: 'General'
-  },
-  {
-    id: 'food',
-    name: 'Food Classifier',
-    description: 'Specialized for food recognition',
-    modelPath: 'Kaludi/food-category-classification-v2.0',
-    task: 'image-classification',
-    icon: <Brain className="w-4 h-4" />,
-    category: 'Specialized'
-  },
-  {
     id: 'animals',
     name: 'Animal Classifier',
     description: 'Animal and pet recognition',
@@ -39,24 +21,6 @@ const AVAILABLE_MODELS: ModelConfig[] = [
     task: 'image-classification',
     icon: <Eye className="w-4 h-4" />,
     category: 'Specialized'
-  },
-  {
-    id: 'detection',
-    name: 'Object Detection',
-    description: 'Detect multiple objects with bounding boxes',
-    modelPath: 'Xenova/yolov9-c_all',
-    task: 'object-detection',
-    icon: <Eye className="w-4 h-4" />,
-    category: 'Detection'
-  },
-  {
-    id: 'segmentation',
-    name: 'Background Removal',
-    description: 'Remove or segment image backgrounds',
-    modelPath: 'Xenova/segformer-b0-finetuned-ade-512-512',
-    task: 'image-segmentation',
-    icon: <Scissors className="w-4 h-4" />,
-    category: 'Editing'
   }
 ];
 

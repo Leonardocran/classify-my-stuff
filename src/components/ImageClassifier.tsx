@@ -10,9 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ModelSelector, AVAILABLE_MODELS } from './ModelSelector';
 import { CameraCapture } from './CameraCapture';
 import { ImageHistory, HistoryItem } from './ImageHistory';
-import { BackgroundRemoval } from './BackgroundRemoval';
 import { ImageEditor } from './ImageEditor';
-import { ObjectDetection } from './ObjectDetection';
 import { PerformanceAnalytics } from './PerformanceAnalytics';
 
 interface ClassificationResult {
@@ -26,7 +24,7 @@ const ImageClassifier = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>('');
   const [results, setResults] = useState<ClassificationResult[]>([]);
-  const [selectedModel, setSelectedModel] = useState('mobilenet');
+  const [selectedModel, setSelectedModel] = useState('animals');
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('analyze');
@@ -145,21 +143,16 @@ const ImageClassifier = () => {
             Classify-my-Stuff
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Professional-grade AI tools for image classification, object detection, editing, and analysis
+            Specialized AI-powered animal classification and recognition platform
           </p>
         </div>
 
         {/* Feature Cards Overview */}
-        <div className="grid md:grid-cols-4 gap-6 mb-8">
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="p-6 text-center bg-card/80 backdrop-blur-sm border border-border/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
             <Brain className="w-8 h-8 text-primary mx-auto mb-3" />
-            <h3 className="font-semibold mb-2">Smart Analysis</h3>
-            <p className="text-sm text-muted-foreground">AI-powered image classification</p>
-          </Card>
-          <Card className="p-6 text-center bg-card/80 backdrop-blur-sm border border-border/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
-            <Settings className="w-8 h-8 text-primary mx-auto mb-3" />
-            <h3 className="font-semibold mb-2">AI Tools</h3>
-            <p className="text-sm text-muted-foreground">Object detection & editing</p>
+            <h3 className="font-semibold mb-2">Animal Classification</h3>
+            <p className="text-sm text-muted-foreground">AI-powered animal recognition</p>
           </Card>
           <Card className="p-6 text-center bg-card/80 backdrop-blur-sm border border-border/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
             <ImageIcon className="w-8 h-8 text-primary mx-auto mb-3" />
@@ -174,9 +167,8 @@ const ImageClassifier = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-card/60 backdrop-blur-sm border border-border/50">
+          <TabsList className="grid w-full grid-cols-3 bg-card/60 backdrop-blur-sm border border-border/50">
             <TabsTrigger value="analyze" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Analyze</TabsTrigger>
-            <TabsTrigger value="tools" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">AI Tools</TabsTrigger>
             <TabsTrigger value="history" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">History</TabsTrigger>
             <TabsTrigger value="analytics" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Analytics</TabsTrigger>
           </TabsList>
@@ -316,18 +308,6 @@ const ImageClassifier = () => {
             )}
           </TabsContent>
 
-          <TabsContent value="tools" className="space-y-6">
-            {selectedImage ? (
-              <div className="grid lg:grid-cols-2 gap-8">
-                <ObjectDetection imageUrl={selectedImage} onDetection={() => {}} />
-                <BackgroundRemoval imageUrl={selectedImage} onResult={() => {}} />
-              </div>
-            ) : (
-              <Card className="p-8 text-center bg-card/50 backdrop-blur-sm border border-border/30">
-                <p className="text-muted-foreground">Upload an image to access AI tools</p>
-              </Card>
-            )}
-          </TabsContent>
 
           <TabsContent value="history">
             <ImageHistory 
