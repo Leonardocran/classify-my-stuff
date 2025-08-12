@@ -25,7 +25,7 @@ const ImageClassifier = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>('');
   const [results, setResults] = useState<ClassificationResult[]>([]);
-  const [selectedModel, setSelectedModel] = useState('animals');
+  const [selectedModel, setSelectedModel] = useState('general');
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('analyze');
@@ -358,12 +358,12 @@ const ImageClassifier = () => {
                             <div className="w-full bg-muted/70 rounded-full h-2 mt-2">
                               <div
                                 className="bg-gradient-primary h-2 rounded-full transition-all duration-500"
-                                style={{ width: `${result?.confidence * 100}%` }}
+                                style={{ width: `${result?.score * 100}%` }}
                               />
                             </div>
                           </div>
                           <Badge variant={index === 0 ? "default" : "secondary"}>
-                            {formatScore(result?.confidence)}
+                            {formatScore(result?.score)}
                           </Badge>
                         </div>
                       ))}

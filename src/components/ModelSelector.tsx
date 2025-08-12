@@ -14,13 +14,13 @@ export interface ModelConfig {
 
 const AVAILABLE_MODELS: ModelConfig[] = [
   {
-    id: 'animals',
-    name: 'Animal Classifier',
-    description: 'Animal and pet recognition',
+    id: 'general',
+    name: 'General Classifier',
+    description: 'Detects vehicles, objects, food, animals, and everyday items',
     modelPath: 'microsoft/resnet-50',
     task: 'image-classification',
     icon: <Eye className="w-4 h-4" />,
-    category: 'Specialized'
+    category: 'General Purpose'
   }
 ];
 
