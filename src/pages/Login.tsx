@@ -36,7 +36,7 @@ export default function Login() {
           title: "Login Successful",
           description: "Welcome back to your AI-powered workspace!",
         });
-        navigate('/');
+        navigate('/classifier');
       }
     } catch (error) {
       toast({

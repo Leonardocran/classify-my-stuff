@@ -14,6 +14,7 @@ import { BackgroundRemoval } from './BackgroundRemoval';
 import { ImageEditor } from './ImageEditor';
 import { ObjectDetection } from './ObjectDetection';
 import { PerformanceAnalytics } from './PerformanceAnalytics';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ClassificationResult {
   label: string;
@@ -33,83 +34,148 @@ const ImageClassifier = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
+  async function uploadFile(file) {
+  const bucketName = 'classify-my-stuff'; // Your bucket name
+  const filePath = `images/${file.name}`; // Path in the bucket
+
+  try {
+    const { data, error } = await supabase.storage
+      .from(bucketName)
+      .upload(filePath, file, {
+        cacheControl: '3600', // Optional: Cache control
+        upsert: false,        // Prevent overwriting
+      });
+
+    if (error) {
+      console.error('Error uploading file:', error.message);
+      return null;
+    }
+
+    // Get public URL
+    const { data: publicData } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(filePath);
+
+    console.log('✅ File uploaded successfully:', publicData.publicUrl);
+
+    return publicData.publicUrl; // Return the URL
+  } catch (err) {
+    console.error('An unexpected error occurred during upload:', err.message);
+    return null;
+  }
+}
+
+
   const classifyImage = useCallback(async (imageUrl: string, fileName: string = 'uploaded-image') => {
-    const startTime = Date.now();
-    try {
-      setIsLoading(true);
-      setLoadingProgress(0);
-      
-      const model = AVAILABLE_MODELS.find(m => m.id === selectedModel);
-      if (!model) return;
+  const startTime = Date.now();
+  try {
+    setIsLoading(true);
+    setLoadingProgress(0);
 
-      const classifier = await pipeline(
-        model.task,
-        model.modelPath,
-        {
-          progress_callback: (progress: any) => {
-            if (progress.status === 'progress') {
-              setLoadingProgress(Math.round(progress.progress * 100));
-            }
-          }
-        }
-      );
-
-      const predictions = await classifier(imageUrl, { top_k: 5 });
-      const processingTime = (Date.now() - startTime) / 1000;
-      
-      setResults(predictions as ClassificationResult[]);
-      
-      // Add to history
-      const historyItem: HistoryItem = {
-        id: Date.now().toString(),
-        imageUrl,
-        fileName,
-        timestamp: new Date(),
-        results: predictions as ClassificationResult[],
-        modelUsed: model.name,
-      };
-      setHistory(prev => [historyItem, ...prev]);
-      
-      toast({
-        title: "Analysis Complete!",
-        description: `Classified with ${model.name} in ${processingTime.toFixed(1)}s`,
-      });
-    } catch (error) {
-      console.error('Classification error:', error);
-      toast({
-        title: "Classification Failed",
-        description: "Unable to analyze the image. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-      setLoadingProgress(0);
+    // Call your backend Flask server API
+    const response = await fetch("http://127.0.0.1:5000/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ url: imageUrl }), // Send the image URL to the backend
+    });
+    console.log("Response from server:", response);
+    if (!response.ok) {
+      throw new Error(`Server returned ${response.status}`);
     }
-  }, [selectedModel, toast]);
+    const model = AVAILABLE_MODELS.find(m => m.id === selectedModel);
+    const predictions = await response.json();
+    const processingTime = (Date.now() - startTime) / 1000;
 
-  const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    // Save results to state
+    setResults(predictions as ClassificationResult[]);
 
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Invalid File Type",
-        description: "Please select an image file (JPG, PNG, etc.)",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const imageUrl = e.target?.result as string;
-      setSelectedImage(imageUrl);
-      setFileName(file.name);
-      setResults([]);
-      classifyImage(imageUrl, file.name);
+    // Add to history
+    const historyItem: HistoryItem = {
+      id: Date.now().toString(),
+      imageUrl,
+      fileName,
+      timestamp: new Date(),
+      results: predictions as ClassificationResult[],
+      modelUsed: model.name,
     };
-    reader.readAsDataURL(file);
-  }, [classifyImage, toast]);
+    setHistory(prev => [historyItem, ...prev]);
+
+    toast({
+      title: "Analysis Complete!",
+      description: `Classified with VGG19 (Server) in ${processingTime.toFixed(1)}s`,
+    });
+  } catch (error) {
+    console.error("Classification error:", error);
+    toast({
+      title: "Classification Failed",
+      description: "Unable to analyze the image. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsLoading(false);
+    setLoadingProgress(0);
+  }
+}, [toast]);
+
+  // const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (!file) return;
+
+  //   if (!file.type.startsWith('image/')) {
+  //     toast({
+  //       title: "Invalid File Type",
+  //       description: "Please select an image file (JPG, PNG, etc.)",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
+
+  //   const reader = new FileReader();
+  //   reader.onload = (e) => {
+  //     const imageUrl = e.target?.result as string;
+  //     setSelectedImage(imageUrl);
+  //     setFileName(file.name);
+  //     setResults([]);
+  //     classifyImage(imageUrl, file.name);
+  //   };
+  //   reader.readAsDataURL(file);
+  // }, [classifyImage, toast]);
+  const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    toast({
+      title: "Invalid File Type",
+      description: "Please select an image file (JPG, PNG, etc.)",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  // Upload file to Supabase and get public URL
+  const publicUrl = await uploadFile(file);
+  if (!publicUrl) {
+    toast({
+      title: "Upload Failed",
+      description: "Could not upload the image to the server.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  // Update UI with the uploaded image's URL
+  setSelectedImage(publicUrl);
+  setFileName(file.name);
+  setResults([]);
+
+  // Use the public URL for classification
+  classifyImage(publicUrl, file.name);
+
+}, [classifyImage, toast]);
+
 
   const handleCameraCapture = useCallback((file: File) => {
     const reader = new FileReader();
@@ -300,12 +366,12 @@ const ImageClassifier = () => {
                             <div className="w-full bg-muted/70 rounded-full h-2 mt-2">
                               <div
                                 className="bg-gradient-primary h-2 rounded-full transition-all duration-500"
-                                style={{ width: `${result.score * 100}%` }}
+                                style={{ width: `${result?.confidence * 100}%` }}
                               />
                             </div>
                           </div>
                           <Badge variant={index === 0 ? "default" : "secondary"}>
-                            {formatScore(result.score)}
+                            {formatScore(result?.confidence)}
                           </Badge>
                         </div>
                       ))}

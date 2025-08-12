@@ -18,10 +18,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-<Route path="/" element={<Index />} />
-<Route path="/signup" element={<Signup />} />
-<Route path="/login" element={<LoginPage />} />
-<Route path="*" element={<NotFound />} />
+            <Route path="/" element={<Signup />} />
+            <Route path="/classifier" element={<Index />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
