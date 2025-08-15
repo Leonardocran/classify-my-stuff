@@ -243,16 +243,24 @@ const ImageClassifier = () => {
       <div className="w-full min-h-screen relative z-10">
         {/* Header with Logout */}
         <header className="flex justify-between items-center p-6 border-b border-border/20 backdrop-blur-sm bg-background/50">
-          <div className="flex items-center gap-2">
-            <Brain className="w-8 h-8 text-primary" />
-            <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Classify-my-Stuff
-            </h1>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <Brain className="w-6 h-6 text-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                Classify My Stuff
+              </h1>
+              <p className="text-xs text-muted-foreground">AI Classification Platform</p>
+            </div>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">
-              Welcome, {user?.email}
-            </span>
+            <div className="text-right">
+              <div className="text-sm font-medium">{user?.email}</div>
+              <div className="text-xs text-muted-foreground">
+                {history.length} classifications
+              </div>
+            </div>
             <Button variant="outline" size="sm" onClick={handleLogout}>
               <LogOut className="w-4 h-4 mr-2" />
               Logout
@@ -262,18 +270,14 @@ const ImageClassifier = () => {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full rounded-none border-b border-border/20 bg-background/50 backdrop-blur-sm h-16">
-            <div className="max-w-6xl mx-auto flex w-full">
-              <TabsTrigger value="analyze" className="flex-1 h-12 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <div className="max-w-4xl mx-auto flex w-full justify-center">
+              <TabsTrigger value="analyze" className="px-8 h-12 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 <Brain className="w-5 h-5 mr-2" />
-                Analyze
+                Classify
               </TabsTrigger>
-              <TabsTrigger value="history" className="flex-1 h-12 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <TabsTrigger value="history" className="px-8 h-12 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 <ImageIcon className="w-5 h-5 mr-2" />
                 History
-              </TabsTrigger>
-              <TabsTrigger value="profile" className="flex-1 h-12 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                <User className="w-5 h-5 mr-2" />
-                Profile
               </TabsTrigger>
             </div>
           </TabsList>
@@ -284,10 +288,10 @@ const ImageClassifier = () => {
               <div className="text-center space-y-6 py-12">
                 <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-primary/20 backdrop-blur-sm rounded-full text-primary font-medium border border-primary/20 shadow-lg">
                   <Brain className="w-5 h-5" />
-                  General AI Classification
+                  AI-Powered Classification
                 </div>
                 <h1 className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                  Classify Anything
+                  Classify My Stuff
                 </h1>
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                   Upload an image and our AI will identify vehicles, objects, food, animals, and everyday items with incredible accuracy
@@ -449,12 +453,37 @@ const ImageClassifier = () => {
             <div className="max-w-6xl mx-auto p-8">
               <div className="text-center space-y-4 mb-8">
                 <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                  Analysis History
+                  My Classifications
                 </h1>
                 <p className="text-lg text-muted-foreground">
-                  View and manage your previous classifications
+                  View and manage your previous analysis results
                 </p>
               </div>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <Card className="p-4 text-center bg-card/60 backdrop-blur-sm border border-border/50">
+                  <div className="text-2xl font-bold text-primary">{history.length}</div>
+                  <div className="text-sm text-muted-foreground">Total Analyzed</div>
+                </Card>
+                <Card className="p-4 text-center bg-card/60 backdrop-blur-sm border border-border/50">
+                  <div className="text-2xl font-bold text-primary">{history.filter(h => h.isFavorite).length}</div>
+                  <div className="text-sm text-muted-foreground">Favorites</div>
+                </Card>
+                <Card className="p-4 text-center bg-card/60 backdrop-blur-sm border border-border/50">
+                  <div className="text-2xl font-bold text-primary">
+                    {history.length > 0 ? Math.round((history.reduce((acc, item) => acc + item.results[0]?.score || 0, 0) / history.length) * 100) : 0}%
+                  </div>
+                  <div className="text-sm text-muted-foreground">Avg Confidence</div>
+                </Card>
+                <Card className="p-4 text-center bg-card/60 backdrop-blur-sm border border-border/50">
+                  <div className="text-2xl font-bold text-primary">
+                    {history.filter(h => new Date(h.timestamp).toDateString() === new Date().toDateString()).length}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Today</div>
+                </Card>
+              </div>
+
               <ImageHistory 
                 items={history}
                 onItemSelect={(item) => {
@@ -472,96 +501,6 @@ const ImageClassifier = () => {
                   setHistory(prev => prev.filter(item => item.id !== id));
                 }}
               />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="profile" className="min-h-screen">
-            <div className="max-w-4xl mx-auto p-8">
-              <div className="text-center space-y-4 mb-8">
-                <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                  Profile & Settings
-                </h1>
-                <p className="text-lg text-muted-foreground">
-                  Manage your account and view analytics
-                </p>
-              </div>
-
-              <div className="grid gap-6">
-                {/* Profile Card */}
-                <Card className="p-6 bg-card/60 backdrop-blur-sm border border-border/50">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <User className="w-5 h-5 text-primary" />
-                      Account Information
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Email:</span>
-                        <span className="font-medium">{user?.email}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Member since:</span>
-                        <span className="font-medium">
-                          {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
-                        </span>
-                      </div>
-                      <div className="pt-4 border-t border-border/20">
-                        <Button variant="destructive" onClick={handleLogout} className="w-full">
-                          <LogOut className="w-4 h-4 mr-2" />
-                          Sign Out
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Stats Card */}
-                <Card className="p-6 bg-card/60 backdrop-blur-sm border border-border/50">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Zap className="w-5 h-5 text-primary" />
-                      Usage Statistics
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-primary">{history.length}</div>
-                        <div className="text-sm text-muted-foreground">Total Analyzed</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-primary">{history.filter(h => h.isFavorite).length}</div>
-                        <div className="text-sm text-muted-foreground">Favorites</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-primary">
-                          {history.length > 0 ? Math.round((history.reduce((acc, item) => acc + item.results[0]?.score || 0, 0) / history.length) * 100) : 0}%
-                        </div>
-                        <div className="text-sm text-muted-foreground">Avg Confidence</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-primary">
-                          {history.filter(h => new Date(h.timestamp).toDateString() === new Date().toDateString()).length}
-                        </div>
-                        <div className="text-sm text-muted-foreground">Today</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Analytics */}
-                <PerformanceAnalytics 
-                  isVisible={true}
-                  analysisHistory={history.map(item => ({
-                    modelUsed: item.modelUsed,
-                    confidence: item.results[0]?.score || 0,
-                    processingTime: Math.random() * 3 + 1,
-                    timestamp: item.timestamp
-                  }))}
-                />
-              </div>
             </div>
           </TabsContent>
         </Tabs>
