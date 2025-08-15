@@ -284,89 +284,145 @@ const ImageClassifier = () => {
 
           <TabsContent value="analyze" className="min-h-screen">
             <div className="max-w-6xl mx-auto p-8 space-y-8">
-              {/* Hero Section */}
-              <div className="text-center space-y-6 py-12">
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-primary/20 backdrop-blur-sm rounded-full text-primary font-medium border border-primary/20 shadow-lg">
-                  <Brain className="w-5 h-5" />
+              {/* Hero Section - Simplified */}
+              <div className="text-center space-y-4 py-8">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-primary/15 backdrop-blur-sm rounded-full text-primary font-medium border border-primary/20">
+                  <Brain className="w-4 h-4" />
                   AI-Powered Classification
                 </div>
-                <h1 className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                   Classify My Stuff
                 </h1>
-                <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                  Upload an image and our AI will identify vehicles, objects, food, animals, and everyday items with incredible accuracy
+                <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+                  Upload an image to identify vehicles, objects, food, animals, and everyday items
                 </p>
               </div>
 
-              {/* Model Selection */}
-              <Card className="p-6 bg-card/60 backdrop-blur-sm border border-border/50">
-                <ModelSelector 
-                  selectedModel={selectedModel} 
-                  onModelChange={setSelectedModel} 
-                />
-              </Card>
+              {/* Two Column Layout */}
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Left Column - Upload & Model */}
+                <div className="lg:col-span-2 space-y-6">
+                  {/* Model Selection - Compact */}
+                  <Card className="p-4 bg-card/60 backdrop-blur-sm border border-border/50">
+                    <ModelSelector 
+                      selectedModel={selectedModel} 
+                      onModelChange={setSelectedModel} 
+                    />
+                  </Card>
 
-              {/* Main Upload Area - Large and Centered */}
-              <Card className="p-16 border-2 border-dashed border-primary/30 hover:border-primary/50 transition-all duration-300 bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-sm min-h-[500px] flex flex-col items-center justify-center">
-                <div className="text-center space-y-8 max-w-md">
-                  <div className="mx-auto w-24 h-24 bg-gradient-primary/20 rounded-full flex items-center justify-center border-2 border-primary/30 shadow-lg">
-                    <Upload className="w-12 h-12 text-primary" />
-                  </div>
-                  <div>
-                    <h2 className="text-3xl font-bold mb-4">Upload Your Image</h2>
-                    <p className="text-lg text-muted-foreground mb-8">
-                      Drop an image here or click to browse
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-4 w-full">
-                    <Button 
-                      size="lg" 
-                      className="w-full h-14 text-lg"
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      <ImageIcon className="w-6 h-6 mr-2" />
-                      Browse Files
-                    </Button>
-                    <div className="flex gap-3 justify-center">
-                      <CameraCapture onCapture={handleCameraCapture} />
-                      <ImageHistory 
-                        items={history}
-                        onItemSelect={(item) => {
-                          setSelectedImage(item.imageUrl);
-                          setFileName(item.fileName);
-                          setResults(item.results);
-                        }}
-                        onToggleFavorite={(id) => {
-                          setHistory(prev => prev.map(item => 
-                            item.id === id ? { ...item, isFavorite: !item.isFavorite } : item
-                          ));
-                        }}
-                        onDeleteItem={(id) => {
-                          setHistory(prev => prev.filter(item => item.id !== id));
-                        }}
-                      />
+                  {/* Main Upload Area - Large and Centered */}
+                  <Card className="p-12 border-2 border-dashed border-primary/30 hover:border-primary/50 transition-all duration-300 bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-sm min-h-[400px] flex flex-col items-center justify-center">
+                    <div className="text-center space-y-6 max-w-sm">
+                      <div className="mx-auto w-20 h-20 bg-gradient-primary/20 rounded-full flex items-center justify-center border-2 border-primary/30 shadow-lg animate-pulse">
+                        <Upload className="w-10 h-10 text-primary" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold mb-2">Upload Your Image</h2>
+                        <p className="text-muted-foreground mb-6">
+                          Drop an image here or click to browse
+                        </p>
+                      </div>
+                      <div className="space-y-3 w-full">
+                        <Button 
+                          size="lg" 
+                          className="w-full h-12 hover-scale"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          <ImageIcon className="w-5 h-5 mr-2" />
+                          Browse Files
+                        </Button>
+                        <div className="flex gap-2 justify-center">
+                          <CameraCapture onCapture={handleCameraCapture} />
+                          <ImageHistory 
+                            items={history}
+                            onItemSelect={(item) => {
+                              setSelectedImage(item.imageUrl);
+                              setFileName(item.fileName);
+                              setResults(item.results);
+                            }}
+                            onToggleFavorite={(id) => {
+                              setHistory(prev => prev.map(item => 
+                                item.id === id ? { ...item, isFavorite: !item.isFavorite } : item
+                              ));
+                            }}
+                            onDeleteItem={(id) => {
+                              setHistory(prev => prev.filter(item => item.id !== id));
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                  </Card>
                 </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-              </Card>
+
+                {/* Right Column - Stats & Info */}
+                <div className="space-y-6">
+                  <Card className="p-6 bg-gradient-primary/5 border border-primary/20 animate-fade-in">
+                    <h3 className="font-semibold mb-4 text-primary flex items-center gap-2">
+                      <Zap className="w-4 h-4" />
+                      Quick Stats
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Total Analyzed:</span>
+                        <span className="font-bold text-2xl text-primary">{history.length}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Favorites:</span>
+                        <span className="font-bold text-2xl text-primary">{history.filter(h => h.isFavorite).length}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Today:</span>
+                        <span className="font-bold text-2xl text-primary">
+                          {history.filter(h => new Date(h.timestamp).toDateString() === new Date().toDateString()).length}
+                        </span>
+                      </div>
+                    </div>
+                  </Card>
+
+                  {/* User Profile Card */}
+                  <Card className="p-6 bg-card/60 backdrop-blur-sm border border-border/50 animate-fade-in">
+                    <h3 className="font-semibold mb-4 flex items-center gap-2">
+                      <User className="w-4 h-4 text-primary" />
+                      Account
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="text-sm">
+                        <div className="text-muted-foreground">Email</div>
+                        <div className="font-medium">{user?.email}</div>
+                      </div>
+                      <div className="text-sm">
+                        <div className="text-muted-foreground">Member since</div>
+                        <div className="font-medium">
+                          {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm" onClick={handleLogout} className="w-full mt-4">
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Sign Out
+                      </Button>
+                    </div>
+                  </Card>
+                </div>
+              </div>
 
               {/* Loading Progress */}
               {isLoading && (
-                <Card className="p-8 bg-card/50 backdrop-blur-sm border border-border/30">
-                  <div className="space-y-6">
+                <Card className="p-6 bg-card/50 backdrop-blur-sm border border-border/30 animate-scale-in">
+                  <div className="space-y-4">
                     <div className="flex items-center gap-2 justify-center">
-                      <Zap className="w-6 h-6 text-primary animate-pulse" />
-                      <span className="text-lg font-medium">Processing with AI...</span>
+                      <Zap className="w-5 h-5 text-primary animate-pulse" />
+                      <span className="font-medium">Processing with AI...</span>
                     </div>
-                    <Progress value={loadingProgress} className="w-full h-3" />
-                    <p className="text-center text-muted-foreground">
+                    <Progress value={loadingProgress} className="w-full h-2" />
+                    <p className="text-center text-sm text-muted-foreground">
                       {loadingProgress}% Complete
                     </p>
                   </div>
@@ -375,12 +431,15 @@ const ImageClassifier = () => {
 
               {/* Results - Image and Classifications */}
               {selectedImage && (
-                <div className="grid lg:grid-cols-2 gap-8">
+                <div className="grid lg:grid-cols-2 gap-8 animate-fade-in">
                   {/* Image Preview */}
-                  <Card className="p-6 bg-card/50 backdrop-blur-sm border border-border/30">
+                  <Card className="p-6 bg-card/50 backdrop-blur-sm border border-border/30 hover-scale">
                     <CardHeader className="p-0 pb-4">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-xl">Image Preview</CardTitle>
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <ImageIcon className="w-5 h-5 text-primary" />
+                          Image Preview
+                        </CardTitle>
                         <div className="flex gap-2">
                           <Button size="sm" variant="outline" onClick={() => setIsEditorOpen(true)}>
                             <Edit className="w-4 h-4 mr-1" />
@@ -397,45 +456,39 @@ const ImageClassifier = () => {
                       <div className="aspect-square rounded-lg overflow-hidden bg-muted border border-border/20">
                         <img src={selectedImage} alt="Analysis target" className="w-full h-full object-contain" />
                       </div>
-                      <p className="text-sm text-muted-foreground mt-4 text-center">{fileName}</p>
+                      <p className="text-sm text-muted-foreground mt-3 text-center truncate">{fileName}</p>
                     </CardContent>
                   </Card>
 
                   {/* Classification Results */}
                   {results.length > 0 && (
-                    <Card className="p-6 bg-card/50 backdrop-blur-sm border border-border/30">
-                      <CardHeader className="p-0 pb-6">
-                        <CardTitle className="text-xl flex items-center gap-2">
+                    <Card className="p-6 bg-card/50 backdrop-blur-sm border border-border/30 hover-scale">
+                      <CardHeader className="p-0 pb-4">
+                        <CardTitle className="text-lg flex items-center gap-2">
                           <Brain className="w-5 h-5 text-primary" />
                           Classification Results
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="p-0">
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                           {results.map((result, index) => (
-                            <div key={index} className="p-5 rounded-lg bg-gradient-to-r from-card/80 to-card/60 border border-border/50 hover:shadow-md transition-all duration-300">
-                              <div className="flex items-center justify-between mb-3">
-                                <h3 className="text-lg font-semibold capitalize text-foreground">
+                            <div key={index} className="p-4 rounded-lg bg-gradient-to-r from-card/80 to-card/60 border border-border/50 hover:shadow-md transition-all duration-300 animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                              <div className="flex items-center justify-between mb-2">
+                                <h3 className="font-semibold capitalize text-foreground">
                                   {result.label.replace(/_/g, ' ')}
                                 </h3>
                                 <Badge 
                                   variant={index === 0 ? "default" : "secondary"} 
-                                  className="text-sm px-3 py-1"
+                                  className="px-3 py-1"
                                 >
                                   {formatScore(result?.score)}
                                 </Badge>
                               </div>
-                              <div className="space-y-2">
-                                <div className="flex justify-between text-sm">
-                                  <span className="text-muted-foreground">Confidence</span>
-                                  <span className="font-medium">{formatScore(result?.score)}</span>
-                                </div>
-                                <div className="w-full bg-muted/50 rounded-full h-3 overflow-hidden">
-                                  <div
-                                    className="bg-gradient-primary h-full rounded-full transition-all duration-1000 ease-out"
-                                    style={{ width: `${result?.score * 100}%` }}
-                                  />
-                                </div>
+                              <div className="w-full bg-muted/50 rounded-full h-2 overflow-hidden">
+                                <div
+                                  className="bg-gradient-primary h-full rounded-full transition-all duration-1000 ease-out"
+                                  style={{ width: `${result?.score * 100}%` }}
+                                />
                               </div>
                             </div>
                           ))}
@@ -450,34 +503,25 @@ const ImageClassifier = () => {
 
 
           <TabsContent value="history" className="min-h-screen">
-            <div className="max-w-6xl mx-auto p-8">
-              <div className="text-center space-y-4 mb-8">
-                <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                  My Classifications
-                </h1>
-                <p className="text-lg text-muted-foreground">
-                  View and manage your previous analysis results
-                </p>
-              </div>
-
-              {/* Quick Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <Card className="p-4 text-center bg-card/60 backdrop-blur-sm border border-border/50">
-                  <div className="text-2xl font-bold text-primary">{history.length}</div>
+            <div className="max-w-6xl mx-auto p-8 space-y-6">
+              {/* Quick Stats - Clean Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card className="p-6 text-center bg-card/60 backdrop-blur-sm border border-border/50 hover:shadow-lg transition-all duration-300">
+                  <div className="text-3xl font-bold text-primary mb-1">{history.length}</div>
                   <div className="text-sm text-muted-foreground">Total Analyzed</div>
                 </Card>
-                <Card className="p-4 text-center bg-card/60 backdrop-blur-sm border border-border/50">
-                  <div className="text-2xl font-bold text-primary">{history.filter(h => h.isFavorite).length}</div>
+                <Card className="p-6 text-center bg-card/60 backdrop-blur-sm border border-border/50 hover:shadow-lg transition-all duration-300">
+                  <div className="text-3xl font-bold text-primary mb-1">{history.filter(h => h.isFavorite).length}</div>
                   <div className="text-sm text-muted-foreground">Favorites</div>
                 </Card>
-                <Card className="p-4 text-center bg-card/60 backdrop-blur-sm border border-border/50">
-                  <div className="text-2xl font-bold text-primary">
+                <Card className="p-6 text-center bg-card/60 backdrop-blur-sm border border-border/50 hover:shadow-lg transition-all duration-300">
+                  <div className="text-3xl font-bold text-primary mb-1">
                     {history.length > 0 ? Math.round((history.reduce((acc, item) => acc + item.results[0]?.score || 0, 0) / history.length) * 100) : 0}%
                   </div>
                   <div className="text-sm text-muted-foreground">Avg Confidence</div>
                 </Card>
-                <Card className="p-4 text-center bg-card/60 backdrop-blur-sm border border-border/50">
-                  <div className="text-2xl font-bold text-primary">
+                <Card className="p-6 text-center bg-card/60 backdrop-blur-sm border border-border/50 hover:shadow-lg transition-all duration-300">
+                  <div className="text-3xl font-bold text-primary mb-1">
                     {history.filter(h => new Date(h.timestamp).toDateString() === new Date().toDateString()).length}
                   </div>
                   <div className="text-sm text-muted-foreground">Today</div>
