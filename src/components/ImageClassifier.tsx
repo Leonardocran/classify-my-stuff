@@ -34,7 +34,12 @@ const ImageClassifier = () => {
 
   async function uploadFile(file) {
   const bucketName = 'classify-my-stuff'; // Your bucket name
-  const filePath = `images/${file.name}`; // Path in the bucket
+  // const filePath = `images/${file.name}`; // Path in the bucket 
+
+  // Generate a unique filename
+  const fileExt = file.name.split('.').pop(); // Get file extension
+  const uniqueFileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+  const filePath = `images/${uniqueFileName}`;
 
   try {
     const { data, error } = await supabase.storage
@@ -358,12 +363,12 @@ const ImageClassifier = () => {
                             <div className="w-full bg-muted/70 rounded-full h-2 mt-2">
                               <div
                                 className="bg-gradient-primary h-2 rounded-full transition-all duration-500"
-                                style={{ width: `${result?.score * 100}%` }}
+                                style={{ width: `${result?.confidence * 100}%` }}
                               />
                             </div>
                           </div>
                           <Badge variant={index === 0 ? "default" : "secondary"}>
-                            {formatScore(result?.score)}
+                            {formatScore(result?.confidence)}
                           </Badge>
                         </div>
                       ))}
