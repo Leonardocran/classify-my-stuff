@@ -97,19 +97,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setIsLoading(true);
       setLoadingProgress(0);
 
-      const response = await fetch("http://127.0.0.1:5000/predict", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ url: imageUrl }),
+      const response = await supabase.functions.invoke('classify-image', {
+        body: { 
+          imageUrl: imageUrl,
+          fileName: fileName 
+        }
       });
 
-      if (!response.ok) {
-        throw new Error(`Server returned ${response.status}`);
+      if (response.error) {
+        throw new Error(response.error.message || 'Classification failed');
       }
 
-      const predictions = await response.json();
+      const predictions = response.data;
       const processingTime = (Date.now() - startTime) / 1000;
 
       setResults(predictions as ClassificationResult[]);
@@ -120,14 +119,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         fileName,
         timestamp: new Date(),
         results: predictions as ClassificationResult[],
-        modelUsed: 'VGG19 (Server)',
+        modelUsed: 'AI Classification Server',
       };
 
       setHistory(prev => [historyItem, ...prev]);
 
       toast({
         title: "Analysis Complete!",
-        description: `Classified with VGG19 (Server) in ${processingTime.toFixed(1)}s`,
+        description: `Classified with AI Classification Server in ${processingTime.toFixed(1)}s`,
       });
     } catch (error) {
       console.error("Classification error:", error);
