@@ -12,57 +12,33 @@ interface ClassificationResult {
   score: number;
 }
 
-// Real AI classification using Hugging Face API
+// Local AI classification using transformers.js
 async function classifyImage(imageUrl: string): Promise<ClassificationResult[]> {
   console.log('Classifying image:', imageUrl);
   
   try {
-    // Fetch the image
-    const imageResponse = await fetch(imageUrl);
-    if (!imageResponse.ok) {
-      throw new Error(`Failed to fetch image: ${imageResponse.status}`);
-    }
+    // Import transformers dynamically
+    const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.0/dist/transformers.min.js');
     
-    const imageBlob = await imageResponse.blob();
-    console.log('Image fetched successfully, size:', imageBlob.size, 'bytes');
+    // Create image classification pipeline
+    const classifier = await pipeline('image-classification', 'Xenova/vit-base-patch16-224');
     
-    // Convert to base64 for API call
-    const arrayBuffer = await imageBlob.arrayBuffer();
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+    console.log('Pipeline created, processing image:', imageUrl);
     
-    // Call Hugging Face API for image classification
-    const hfResponse = await fetch(
-      "https://api-inference.huggingface.co/models/google/vit-base-patch16-224",
-      {
-        headers: {
-          "Authorization": "Bearer hf_example", // Replace with actual token
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          inputs: base64,
-        }),
-      }
-    );
-
-    if (!hfResponse.ok) {
-      console.error('Hugging Face API error:', hfResponse.status, await hfResponse.text());
-      throw new Error(`Hugging Face API error: ${hfResponse.status}`);
-    }
-
-    const hfResults = await hfResponse.json();
-    console.log('Raw HF results:', hfResults);
+    // Classify the image directly from URL
+    const results = await classifier(imageUrl);
+    console.log('Raw classification results:', results);
     
     // Transform results to our format
-    const results: ClassificationResult[] = hfResults
+    const classificationResults: ClassificationResult[] = results
       .slice(0, 5) // Take top 5 results
       .map((item: any) => ({
         label: item.label,
         score: Math.round(item.score * 100) / 100
       }));
     
-    console.log('Processed results:', results);
-    return results;
+    console.log('Processed results:', classificationResults);
+    return classificationResults;
     
   } catch (error) {
     console.error('Classification error:', error);
