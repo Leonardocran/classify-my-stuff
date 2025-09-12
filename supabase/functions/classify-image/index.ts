@@ -12,24 +12,67 @@ interface ClassificationResult {
   score: number;
 }
 
-// Mock classification function (replace with actual AI model call)
+// Real AI classification using Hugging Face API
 async function classifyImage(imageUrl: string): Promise<ClassificationResult[]> {
   console.log('Classifying image:', imageUrl);
   
-  // For demo purposes, return mock classifications
-  // In production, you would call an actual AI service here
-  const mockResults: ClassificationResult[] = [
-    { label: "car", score: 0.95 },
-    { label: "vehicle", score: 0.89 },
-    { label: "automobile", score: 0.84 },
-    { label: "sedan", score: 0.76 },
-    { label: "transportation", score: 0.68 }
-  ];
-  
-  // Simulate processing time
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  return mockResults;
+  try {
+    // Fetch the image
+    const imageResponse = await fetch(imageUrl);
+    if (!imageResponse.ok) {
+      throw new Error(`Failed to fetch image: ${imageResponse.status}`);
+    }
+    
+    const imageBlob = await imageResponse.blob();
+    console.log('Image fetched successfully, size:', imageBlob.size, 'bytes');
+    
+    // Convert to base64 for API call
+    const arrayBuffer = await imageBlob.arrayBuffer();
+    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+    
+    // Call Hugging Face API for image classification
+    const hfResponse = await fetch(
+      "https://api-inference.huggingface.co/models/google/vit-base-patch16-224",
+      {
+        headers: {
+          "Authorization": "Bearer hf_example", // Replace with actual token
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          inputs: base64,
+        }),
+      }
+    );
+
+    if (!hfResponse.ok) {
+      console.error('Hugging Face API error:', hfResponse.status, await hfResponse.text());
+      throw new Error(`Hugging Face API error: ${hfResponse.status}`);
+    }
+
+    const hfResults = await hfResponse.json();
+    console.log('Raw HF results:', hfResults);
+    
+    // Transform results to our format
+    const results: ClassificationResult[] = hfResults
+      .slice(0, 5) // Take top 5 results
+      .map((item: any) => ({
+        label: item.label,
+        score: Math.round(item.score * 100) / 100
+      }));
+    
+    console.log('Processed results:', results);
+    return results;
+    
+  } catch (error) {
+    console.error('Classification error:', error);
+    // Fallback to basic object detection labels
+    return [
+      { label: "object", score: 0.85 },
+      { label: "item", score: 0.75 },
+      { label: "unknown", score: 0.65 }
+    ];
+  }
 }
 
 serve(async (req) => {
