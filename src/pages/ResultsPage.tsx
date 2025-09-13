@@ -12,7 +12,7 @@ const ResultsPage = () => {
   const { selectedImage, fileName, results, isLoading, loadingProgress, history } = useApp();
   const navigate = useNavigate();
   const { toast } = useToast();
-
+  console.log("Rendering ResultsPage with results:", results);
   const formatScore = (score: number) => `${(score * 100).toFixed(1)}%`;
 
   const handleShare = async () => {
@@ -123,7 +123,7 @@ const ResultsPage = () => {
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-            Top: {results[0] ? formatScore(results[0].score) : 'N/A'}
+            Top: {results[0] ? formatScore(results[0].confidence) : 'N/A'}
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
@@ -228,7 +228,7 @@ const ResultsPage = () => {
                         </div>
                         <div className="text-right">
                           <span className="text-2xl font-bold gradient-text">
-                            {formatScore(result.score)}
+                            {formatScore(result.confidence)}
                           </span>
                           <p className="text-xs text-muted-foreground">Confidence</p>
                         </div>
